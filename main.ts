@@ -1,10 +1,10 @@
 import { google } from "@ai-sdk/google";
-import { generateText, streamText } from "ai";
+import { generateText, streamText, type CoreMessage } from "ai";
 import dotenv from "dotenv";
 
 dotenv.config();
 
-const model = google("gemini-2.0-flash-exp");
+export const model = google("gemini-2.0-flash-exp");
 
 
 export const answerMyQuestion = async (prompt: string) => {
@@ -31,4 +31,20 @@ export const answerMyQuestionWithStream = async (prompt: string) => {
 
 const question = "What is the color of the sun?";
 console.log(await answerMyQuestionWithStream(question));
+
+
+const coreMessages: CoreMessage[] = [
+  {
+    role: "system",
+    content: "You are a helpful assistant that can answer questions and help with tasks.",
+  },
+  {
+    role: "user",
+    content: "hello",
+  },
+  {
+    role: "assistant",
+    content: "hi",
+  },
+];
 
