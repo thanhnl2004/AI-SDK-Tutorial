@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { model } from "./llm-model.ts";
-import { generateObject } from "ai";
+import { streamObject } from "ai";
 
 const schema = z.object({
   recipe: z.object({
@@ -15,21 +15,28 @@ const schema = z.object({
   })
 })
 
-export const createRecipe = async(prompt: string) => {
-  const { object } = await generateObject({
+const createRecipe = async (prompt: string) => {
+  const result = await streamObject({ 
     model,
-    schema,
-    prompt,
-    schemaName: "Recipe",
     system: 
     `You are helping a user create a recipe.
     Use British English variant of ingredient names,
     like Coriander over Cilantro.
-    `
-  })
+    `,
+    schemaName: "Recipe",
+    schema,
+    prompt,
+  })// first chunk of the object
 
-  return object.recipe;
+
+  for await (const obj of result.partialObjectStream) { // wait for each chunk to come in
+    console.clear();
+    console.dir(obj, { depth: null }); // streaming
+  }
+
+  const finalObject = await result.object;
+
+  return finalObject.recipe;
 }
 
-const recipe = await createRecipe("How to make Bun Cha");
-console.log(recipe);
+const recipe = await createRecipe("How to make Peperoni Pizza");
