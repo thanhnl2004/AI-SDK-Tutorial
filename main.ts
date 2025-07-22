@@ -1,6 +1,7 @@
 import { google } from "@ai-sdk/google";
 import { generateText, streamText, type CoreMessage } from "ai";
 import dotenv from "dotenv";
+import { startServer } from "./server.ts";
 
 dotenv.config();
 
@@ -29,22 +30,31 @@ export const answerMyQuestionWithStream = async (prompt: string) => {
   return textStream;
 };
 
-const question = "What is the color of the sun?";
-console.log(await answerMyQuestionWithStream(question));
+// const question = "What is the color of the sun?";
+// console.log(await answerMyQuestionWithStream(question));
 
 
-const coreMessages: CoreMessage[] = [
-  {
-    role: "system",
-    content: "You are a helpful assistant that can answer questions and help with tasks.",
-  },
+const messagesToSend: CoreMessage[] = [
   {
     role: "user",
-    content: "hello",
-  },
-  {
-    role: "assistant",
-    content: "hi",
-  },
-];
+    content: "What is the capital of Wales?"
+  }
+]
 
+const server = await startServer();  
+
+
+const response = await fetch("http://localhost:4000/api/get-completions", {
+  method: "POST",
+  body: JSON.stringify(messagesToSend),
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+const newMessages = await response.json() as CoreMessage[];
+const allMessages = [...messagesToSend, ...newMessages];
+
+console.dir(allMessages, { depth: null });
+
+server.close();
