@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { model } from "./main.ts";
+import { model } from "./llm-model.ts";
 import { serve } from "@hono/node-server";
 import { once } from "events";
 import { generateText, type CoreMessage } from "ai";

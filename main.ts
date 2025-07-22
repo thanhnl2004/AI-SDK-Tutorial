@@ -1,11 +1,7 @@
 import { google } from "@ai-sdk/google";
 import { generateText, streamText, type CoreMessage } from "ai";
-import dotenv from "dotenv";
 import { startServer } from "./server.ts";
-
-dotenv.config();
-
-export const model = google("gemini-2.0-flash-exp");
+import { model } from "./llm-model.ts";
 
 
 export const answerMyQuestion = async (prompt: string) => {

@@ -1,5 +1,5 @@
 import { generateText } from "ai";
-import { model } from "./main.ts";
+import { model } from "./llm-model.ts";
 
 const systemPrompt = `
 You are a text summarizer.
